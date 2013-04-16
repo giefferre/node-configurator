@@ -1,0 +1,29 @@
+server {
+	listen	80; #ipv4
+	#listen	[::]:80 #ipv6 version
+
+	root /srv/www/server.test/application;
+	index index.html index.htm;
+
+	access_log /srv/www/server.test/logs/access.log;
+	error_log /srv/www/server.test/logs/error.log;
+
+	client_max_body_size 128m;
+	client_body_buffer_size 128k;
+
+	server_name server.test www.server.test;
+
+	location ~* \.(jpg|jpeg|gif|png|css|js|icon|xml)$ {
+		access_log	off;
+		log_not_found	off;
+	}
+
+	location / {
+		try_files $uri $uri/ /index.html;
+	}
+
+	# deny access to Apache's .htaccess files, if present
+	location ~ /\.ht {
+		deny all;
+	}
+}

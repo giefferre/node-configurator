@@ -1,0 +1,47 @@
+server {
+	listen 80; #ipv4
+	#listen	[::]:80 #ipv6 version
+
+	root /srv/www/<%= @website_host %>/application/<%= @website_root %>;
+	index index.php index.html index.htm;
+
+	access_log /srv/www/<%= @website_host %>/logs/access.log;
+	error_log /srv/www/<%= @website_host %>/logs/error.log;
+
+	client_max_body_size 128m;
+	client_body_buffer_size 128k;
+
+	server_name <%= @website_host %>;
+
+	location ~* \.(jpg|jpeg|gif|png|css|js|ico|icon|xml)$ {
+		access_log	off;
+		log_not_found	off;
+	}
+
+    #site root is redirected to the app boot script
+    location = / {
+        try_files @site @site;
+    }
+
+    #all other locations try other files first and go to our front controller if none of them exists
+    location / {
+        try_files $uri $uri/ @site;
+    }
+
+    #return 404 for all php files as we do have a front controller
+    location ~ \.php$ {
+        return 404;
+    }
+
+	location @site {
+		fastcgi_index	index.php;
+		fastcgi_pass	unix:/var/run/php5-fpm.sock;
+		include		fastcgi_params;
+		fastcgi_param  SCRIPT_FILENAME $document_root/index.php;
+	}
+
+	# deny access to Apache's .htaccess files, if present
+	location ~ /\.ht {
+		deny all;
+	}
+}
