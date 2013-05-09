@@ -1,3 +1,4 @@
+import os
 from fabric.api import *
 from fabric.contrib.project import *
 from fabric.context_managers import cd
