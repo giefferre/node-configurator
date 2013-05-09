@@ -58,14 +58,14 @@ def addapplication(repoUrl, repoBranch = 'master'):
 	run("git clone -b %s %s /tmp/%s" % (repoBranch, repoUrl, repoName))
 
 	service_is_valid = exists("/tmp/%s" % (repoName)) & \
-		exists("/tmp/%s/deploy/install.sh" % (repoName)) & \
-		exists("/tmp/%s/deploy/install.pp" % (repoName))
+		exists("/tmp/%s/install.sh" % (repoName)) #& \
+		#exists("/tmp/%s/install.pp" % (repoName))
 
 	if service_is_valid:
 		print green("OK, %s has a valid application installer..." % repoName, bold=True)
 		update_modules()
-		sudo("puppet apply /tmp/%s/deploy/install.pp" % repoName)
-		with cd("/tmp/%s/deploy/" % repoName):
+		#sudo("puppet apply /tmp/%s/install.pp" % repoName)
+		with cd("/tmp/%s/" % repoName):
 			sudo("sh ./install.sh")
 
 	else:
@@ -84,14 +84,14 @@ def delapplication(repoUrl, repoBranch = 'master'):
 	run("git clone -b %s %s /tmp/%s" % (repoBranch, repoUrl, repoName))
 
 	service_is_valid = exists("/tmp/%s" % (repoName)) & \
-		exists("/tmp/%s/deploy/uninstall.sh" % (repoName)) & \
-		exists("/tmp/%s/deploy/uninstall.pp" % (repoName))
+		exists("/tmp/%s/uninstall.sh" % (repoName)) #& \
+		#exists("/tmp/%s/uninstall.pp" % (repoName))
 
 	if service_is_valid:
 		print green("OK, %s has a valid application uninstaller..." % repoName, bold=True)
 		update_modules()
-		sudo("puppet apply /tmp/%s/deploy/uninstall.pp" % repoName)
-		with cd("/tmp/%s/deploy/" % repoName):
+		#sudo("puppet apply /tmp/%s/uninstall.pp" % repoName)
+		with cd("/tmp/%s/" % repoName):
 			sudo("sh ./uninstall.sh")
 
 	else:
