@@ -14,6 +14,14 @@ class base {
         
     $sysPackages = ["build-essential", "curl", "language-pack-en", "wget", "git", "sqlite", "python", "python-dev", "python-setuptools", "python-pip"]
 	package { $sysPackages: ensure => latest, }
+	
+    file { 'srv':
+            path => '/srv',
+            ensure => directory,
+            owner => 'root',
+            group => 'root',
+            mode => '0755',
+    }
 
 }
 
